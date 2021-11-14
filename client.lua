@@ -3,30 +3,42 @@
 
 local actionkey=21 --Lshift (or whatever your sprint key is bound to)
 local allowshuffle = false
-local playerped=GetPlayerPed(-1)
-local currentvehicle=GetVehiclePedIsIn(playerped, false)
+local playerped=nil
+local currentvehicle=nil
+
+--getting vars
+Citizen.CreateThread(function()
+	while true do
+		Citizen.Wait(100)
+		--constantly getting the current 
+		playerped=PlayerPedId()
+		--constantly get player vehicle
+		currentvehicle=GetVehiclePedIsIn(playerped, false)
+	end
+end)
+
 
 Citizen.CreateThread(function()
 	while true do
-		Citizen.Wait(0)
-		--constantly getting the current 
-		playerped=GetPlayerPed(-1)
-		--constantly get player vehicle
-		currentvehicle=GetVehiclePedIsIn(playerped, false)
-		--check if the player is in a vehicle
+		Citizen.Wait(100)
 		if IsPedInAnyVehicle(playerped, false) and allowshuffle == false then
-			--if they're a passenger
-			if GetPedInVehicleSeat(currentvehicle, 0) == playerped  then
-				--if they're trying to shuffle
-				if GetIsTaskActive(playerped, 165) then
-					--if the player doesn't shut the door, shut it manually
-					if GetVehicleDoorAngleRatio(currentvehicle,1) > 0.0 then
-						SetVehicleDoorShut(currentvehicle,1,false)
-					end
-					--move ped back into passenger seat right as the animation starts
-					SetPedIntoVehicle(playerped, currentvehicle, 0)
+			--if they're trying to shuffle for whatever reason
+			SetPedConfigFlag(playerped, 184, true)
+			if GetIsTaskActive(playerped, 165) then
+				--getting seat player is in 
+				seat=0
+				if GetPedInVehicleSeat(currentvehicle, -1) == playerped then
+					seat=-1
 				end
+				--if the passenger doesn't shut the door, shut it manually
+				--if GetVehicleDoorAngleRatio(currentvehicle,1) > 0.0 and seat == 0 then
+					--SetVehicleDoorShut(currentvehicle,1,false)
+				--end
+				--move ped back into the seat right as the animation starts
+				SetPedIntoVehicle(playerped, currentvehicle, seat)
 			end
+		elseif IsPedInAnyVehicle(playerped, false) and allowshuffle == true then
+			SetPedConfigFlag(playerped, 184, false)
 		end
 	end
 end)
@@ -35,27 +47,24 @@ end)
 RegisterNetEvent("SeatShuffle")
 AddEventHandler("SeatShuffle", function()
 	if IsPedInAnyVehicle(playerped, false) then
+		--getting seat
+		seat=0
+		if GetPedInVehicleSeat(currentvehicle, -1) == playerped then
+			seat=-1
+		end
 		--if they're a driver
 		if GetPedInVehicleSeat(currentvehicle,-1) == playerped then
-			allowshuffle=true
 			TaskShuffleToNextVehicleSeat(playerped,currentvehicle)
-			--adding a block until they are actually in their new seat
-			while GetPedInVehicleSeat(currentvehicle,-1) == playerped do
-				Citizen.Wait(0)
-			end
-			allowshuffle=false
-		--if they're a passenger
-		elseif GetPedInVehicleSeat(currentvehicle,0) == playerped then
-			allowshuffle=true
-			--adding a block until they are actually in their new seat
-			while GetPedInVehicleSeat(currentvehicle,0) == playerped do
-				Citizen.Wait(0)
-			end
-			allowshuffle=false
 		end
+		--if they're a passenger
+		--adding a block until they are actually in their new seat
+		allowshuffle=true
+		while GetPedInVehicleSeat(currentvehicle,seat) == playerped do
+			Citizen.Wait(0)
+		end
+		allowshuffle=false
 	else
 		allowshuffle=false
-		eventrunning=false
 		CancelEvent('SeatShuffle')
 	end
 end)
@@ -67,7 +76,7 @@ Citizen.CreateThread(function()
   while true do
 	Citizen.Wait(0)
 	elapsed=0
-	while IsControlPressed(0,actionkey) do
+	while IsControlPressed(0,actionkey) and GetIsTaskActive(playerped, 165) do
 		Citizen.Wait(100)
 		elapsed=elapsed+0.1
 	end
@@ -85,19 +94,14 @@ Citizen.CreateThread(function()
 	--if they release the control mid anim then set back
 	if IsControlJustReleased(1, actionkey) and allowshuffle == true then 
 		--setting threshold for how long the ksy should be pressed for
-		threshhold=0.9
+		threshhold=0.8
 		--if they're in passenger seat then remove add 1 second to the threshold because of slight delay when moving from passenger side
-		if GetPedInVehicleSeat(currentvehicle, 0) == playerped then
-			threshhold=threshhold+0.55
-		end
+		--if GetPedInVehicleSeat(currentvehicle, 0) == playerped then
+			--threshhold=threshhold+0.55
+		--end
 		--if the animation is playing and the key is pressed down for long enough, cancel the animation
 	   if GetIsTaskActive(playerped, 165) and elapsed < threshhold then
 			allowshuffle=false
-			seat=0
-			if GetPedInVehicleSeat(currentvehicle, -1) == playerped then
-				seat=-1
-			end
-			SetPedIntoVehicle(playerped, currentvehicle, seat)
 	   end
     end
     Citizen.Wait(0)
