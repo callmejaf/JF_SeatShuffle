@@ -10,11 +10,14 @@ CHANGELOG
 2.0.1
 -player can now shoot outside of passenger seat
 -made some optimisations
+
 2.0.0
 -can now shuffle from both driver and passenger seat.
 -added keybind option (sprint key by default)
+
 1.0.1
 -By default, players will stay seated in the passenger seat. If you type /shuff they shuffle into the driver seat.
+
 1.0.0
 -First version. By default the player will shuffle into driver seat, /shuffle enables and disables the script.
 
