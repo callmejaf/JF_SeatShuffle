@@ -17,6 +17,7 @@ CHANGELOG
 -By default, players will stay seated in the passenger seat. If you type /shuff they shuffle into the driver seat.
 1.0.0
 -First version. By default the player will shuffle into driver seat, /shuffle enables and disables the script.
+
 KNOWN BUGS
 
 Animation glitch when carjacking from passenger seat
