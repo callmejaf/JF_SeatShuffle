@@ -3,14 +3,14 @@
 
 local actionkey=21 --Lshift (or whatever your sprint key is bound to)
 local allowshuffle = false
-local playerped=GetPlayerPed(-1)
+local playerped=PlayerPedId()
 local currentvehicle=GetVehiclePedIsIn(playerped, false)
 
 Citizen.CreateThread(function()
 	while true do
 		Citizen.Wait(0)
 		--constantly getting the current 
-		playerped=GetPlayerPed(-1)
+		playerped=PlayerPedId()
 		--constantly get player vehicle
 		currentvehicle=GetVehiclePedIsIn(playerped, false)
 		--check if the player is in a vehicle
