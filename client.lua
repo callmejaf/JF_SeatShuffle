@@ -3,8 +3,12 @@
 
 local actionkey=21 --Lshift (or whatever your sprint key is bound to)
 local allowshuffle = false
+
+local playerped=PlayerPedId()
+local currentvehicle=GetVehiclePedIsIn(playerped, false)
 local playerped=nil
 local currentvehicle=nil
+
 
 --getting vars
 Citizen.CreateThread(function()
