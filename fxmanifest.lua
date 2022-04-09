@@ -2,5 +2,7 @@
 -- Made for www.lacountyrp.com
 -- Version 1.0.1
 
--- Add a client script 
+fx_version 'cerulean'
+game 'gta5'
+ 
 client_script 'client.lua'
