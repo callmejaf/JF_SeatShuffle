@@ -1,3 +1,5 @@
+## Orginal link: https://github.com/callmejaf/JF_SeatShuffle
+
 Completely rewritten my old script considering I actually know how to code now and it was littered with bugs
 
 Enjoy!
