@@ -1,4 +1,6 @@
-This Version have some fixes or updates
+Dieses Script verhindert das automatische rutschen vom Beifahrer zum Fahrer für FiveM
+
+Befehl: /rutschen
 
 ## Creator: https://github.com/callmejaf/JF_SeatShuffle
 
